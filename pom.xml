@@ -25,6 +25,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+       <!-- JPA -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- MySQL -->
+        <dependency>
+        <groupId>mysql</groupId>
+         <artifactId>mysql-connector-java</artifactId>
+        
+         <version>6.0.5</version>
+         <scope>runtime</scope>
+        </dependency>
+    <!-- Manage Json Objects-->
+    <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.13.5</version>
+</dependency>
+    
+    
  <!-- improve the development time--> 
  <dependency>
 <groupId>org.springframework.boot</groupId>

@@ -5,6 +5,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.Base64;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.logging.Logger;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +25,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.security.auth.UsernamePasswordAuthentication;
 import com.security.auth.OtpAuthentication;
+import com.security.repositories.PrivatekeyRepository;
+import com.security.entities.Privatekey;
 
 
 @Component
@@ -37,6 +43,9 @@ public class InitialAuthenticationFilter
   private final Logger logger = 
       Logger.getLogger(
     InitialAuthenticationFilter.class.getName() );
+  
+  @Autowired
+  private PrivatekeyRepository keyRepository;
 
   @Override
   protected void doFilterInternal(
@@ -63,9 +72,28 @@ public class InitialAuthenticationFilter
       new OtpAuthentication(username,code);
      authenticationManager.authenticate(a);
 
-     SecretKey key = Keys.hmacShaKeyFor(
-             signingKey.getBytes(
-                 StandardCharsets.UTF_8));
+     //SecretKey key = Keys.hmacShaKeyFor(
+     //        signingKey.getBytes(
+     //            StandardCharsets.UTF_8));
+
+     //ALG HS256
+     SecretKey key = 
+         Keys.secretKeyFor(
+                  SignatureAlgorithm.HS256);
+
+    byte[] rawData = key.getEncoded();
+    logger.info("rawData: "+ rawData);
+    logger.info("KEY  Base64:  "+
+         Base64.getEncoder()
+                  .encodeToString(rawData));
+
+     //Store the generated Key
+     Privatekey userKey = new Privatekey();
+     userKey.setUsername(username);
+     userKey.setPrivatekey(
+               Base64.getEncoder()
+                .encodeToString(rawData) );
+     keyRepository.save(userKey);
      
      String jwt = Jwts.builder()
     .setClaims(Map.of("username",username)) 

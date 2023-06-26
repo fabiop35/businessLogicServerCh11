@@ -1,0 +1,10 @@
+#
+curl -H "username:danielle" -H "password:12345" http://localhost:8083/login
+
+#
+curl -H "username:danielle" -H "code:4505" http://localhost:8083/login
+
+#
+curl -H "Authorization: " http://localhost:8083/testJWT
+
+
